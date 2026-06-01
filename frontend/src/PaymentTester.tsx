@@ -21,6 +21,7 @@ export function PaymentTester() {
   const [status, setStatus] = useState<Status | null>(null)
   const [error, setError] = useState<string | null>(null)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const genRef = useRef(0)
 
   useEffect(() => {
     return () => {
@@ -65,7 +66,9 @@ export function PaymentTester() {
     setQrString(data.qrString)
     setStatus('PENDING')
 
+    const gen = ++genRef.current
     intervalRef.current = setInterval(async () => {
+      if (gen !== genRef.current) return
       const sr = await fetch(`/api/status/${data.orderId}`)
       if (!sr.ok) return
       const sd = (await sr.json()) as StatusResponse
