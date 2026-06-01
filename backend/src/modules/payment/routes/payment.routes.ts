@@ -2,6 +2,7 @@ import { type Request, type Response, Router } from 'express';
 import { generateKhqrBodySchema, type GenerateKhqrResponse, type StatusResponse } from '../../../shared/types.js';
 import { generatePayment } from '../use-cases/generate-payment.js';
 import { getPaymentStatus } from '../use-cases/get-payment-status.js';
+import { confirmPayment } from '../../bot/use-cases/confirm-payment.js';
 
 type ErrorResponse = { error: string };
 
@@ -33,3 +34,8 @@ export function statusHandler(
 export const paymentRouter = Router();
 paymentRouter.post('/generate-khqr', generateKhqrHandler);
 paymentRouter.get('/status/:orderId', statusHandler);
+paymentRouter.post('/internal/confirm', async (req, res) => {
+  const { text } = req.body;
+  if (text) await confirmPayment(text);
+  res.status(200).json({ ok: true });
+});

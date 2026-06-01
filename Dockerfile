@@ -1,10 +1,9 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
-RUN corepack enable
-COPY backend/package.json backend/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY backend/package.json ./
+RUN npm install
 COPY backend/ .
-RUN pnpm build
+RUN npm run build
 
 FROM node:22-alpine
 WORKDIR /app

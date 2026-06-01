@@ -11,11 +11,16 @@ export function startBot(): Telegraf | undefined {
     return undefined;
   }
   const bot = new Telegraf(token);
-  bot.on('channel_post', async (ctx) => {
-    const post = ctx.channelPost;
+  bot.on(['channel_post', 'message'], async (ctx) => {
+    const post = ctx.channelPost || ctx.message;
     const text = post && 'text' in post ? post.text : undefined;
+    logger.info({ text }, 'Received incoming Telegram message');
     if (text) await confirmPayment(text);
   });
-  void bot.launch();
+  bot.launch().then(() => {
+    logger.info('Telegram Bot successfully connected and polling!');
+  }).catch(err => {
+    logger.error({ err }, 'Telegram Bot failed to launch');
+  });
   return bot;
 }
