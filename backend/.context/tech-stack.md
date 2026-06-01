@@ -12,6 +12,7 @@ Exact components and their role in this microservice. Versions reflect what is i
 | Runtime Validation | **zod** — `4.4.3` | Schema-first runtime validation of all inbound request bodies/params; inferred types feed the strict TS layer (no `any`). |
 | Structured Logging | **pino** — `10.3.1` | Low-overhead JSON logger for errors and the confirmation loop; the crash-proof `catch` blocks log here instead of throwing. |
 | Process Engineering & Management | **PM2** | Production process manager — cluster mode, memory monitoring, zero-downtime reloads (Phase 3). |
+| Container & DevOps | **Docker** (+ Docker Compose) | Multi-stage `node:22-alpine` image for the backend; Compose wires backend + frontend for local dev and staging. |
 
 ## Supporting libraries
 
@@ -39,6 +40,24 @@ pnpm typecheck  # tsc --noEmit
 ```
 
 > Note: PM2 is a Phase-3 runtime dependency installed on the server node; it is not required for local MVP development.
+
+## Docker / DevOps
+
+| Artifact | Purpose |
+|----------|---------|
+| `Dockerfile` (repo root) | Multi-stage `node:22-alpine` build — compiles TypeScript in a builder stage, copies only `dist/` + `node_modules` to the final image. |
+| `docker-compose.yml` (repo root) | Wires `backend` (port 3001) and `frontend` (port 5173/80) for local dev and staging; reads `backend/.env` via `env_file`. |
+| `.dockerignore` | Excludes `node_modules`, `dist`, `.env`, and source maps from the build context. |
+
+Build & run:
+```
+docker build -t bakong-gateway .
+docker run -p 3001:3001 --env-file backend/.env bakong-gateway
+# or
+docker compose up
+```
+
+> In production, Docker's `restart: unless-stopped` replaces PM2 for process supervision unless cluster mode (multi-core) is needed.
 
 ---
 
