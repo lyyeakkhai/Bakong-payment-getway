@@ -10,6 +10,7 @@ Active build status for the Cambodia Payment Proxy Microservice.
 - [x] Installation of internal TypeScript modules via pnpm.
 - [x] Construction of the local `/api/generate-khqr` string endpoint.
 - [x] Construction of the regex pattern reader loop inside the Telegraf pipeline.
+- [x] Phase 2 staging: Vite `/api` proxy, `PaymentTester` UI (QR generation + 3 s status polling + race-condition fix). Branch: `feature/phase2-staging-channel-automation`. Spec at [`feature-specs/2026-06-01-phase2-staging-channel-automation/`](feature-specs/2026-06-01-phase2-staging-channel-automation/). Manual end-to-end verification pending (requires live backend + browser).
 - [ ] PM2 clustering configuration test validation execution on the server node.
 
 ## Legend
