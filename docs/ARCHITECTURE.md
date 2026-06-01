@@ -24,6 +24,8 @@
 | Runtime  | Node 26, `tsx` for dev, `tsc` for build |
 | KHQR     | `bakong-khqr` 1.0.20                     |
 | Bot      | `telegraf` 4.x                          |
+| Validation | `zod` 4.x (runtime request/env validation) |
+| Logging  | `pino` 10.x (+ `pino-pretty` dev)        |
 | Frontend | React 19 + Vite 7 + Tailwind CSS v4     |
 | QR UI    | `qrcode.react`, `lucide-react`          |
 
@@ -104,8 +106,8 @@ Adding a tenant = **one line**. `ProjectPrefix = keyof typeof PROJECT_ROUTES` is
 
 Backend (`backend/`):
 ```
-npm i express bakong-khqr telegraf dotenv cors
-npm i -D typescript @types/express @types/cors @types/node @types/bakong-khqr tsx
+npm i express bakong-khqr telegraf dotenv cors zod pino
+npm i -D typescript @types/express @types/cors @types/node @types/bakong-khqr tsx pino-pretty
 ```
 Frontend (`frontend/`):
 ```
