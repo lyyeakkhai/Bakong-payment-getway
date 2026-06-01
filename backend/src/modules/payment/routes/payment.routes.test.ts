@@ -4,21 +4,15 @@ import assert from 'node:assert/strict';
 process.env.BAKONG_ACCOUNT_ID ??= 'tester@bank';
 process.env.MERCHANT_NAME ??= 'Test Merchant';
 
-const { generateKhqrHandler, statusHandler } = await import('./server.js');
+const { generateKhqrHandler, statusHandler } = await import('../routes/payment.routes.js');
 
 type Captured = { code: number; body: unknown };
 
 function mockRes(): { res: { status: (c: number) => unknown; json: (b: unknown) => unknown }; captured: Captured } {
   const captured: Captured = { code: 0, body: undefined };
   const res = {
-    status(c: number) {
-      captured.code = c;
-      return res;
-    },
-    json(b: unknown) {
-      captured.body = b;
-      return res;
-    },
+    status(c: number) { captured.code = c; return res; },
+    json(b: unknown) { captured.body = b; return res; },
   };
   return { res, captured };
 }

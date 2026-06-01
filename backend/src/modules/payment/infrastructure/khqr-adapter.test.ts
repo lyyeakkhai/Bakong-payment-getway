@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 process.env.BAKONG_ACCOUNT_ID ??= 'tester@bank';
 process.env.MERCHANT_NAME ??= 'Test Merchant';
 
-const { generateKhqr } = await import('./khqr.js');
+const { generateKhqr } = await import('./khqr-adapter.js');
 
 test('orderId is `${prefix}-${now}` with an injected clock', () => {
   const { orderId } = generateKhqr('LOCAL', 1.5, 1717150293);

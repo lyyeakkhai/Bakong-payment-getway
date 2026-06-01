@@ -21,14 +21,12 @@ const envSchema = z.object({
 
 export type AppConfig = z.infer<typeof envSchema>;
 
-/** Pure: validate an arbitrary env source. Throws on invalid input. */
 export function parseEnv(source: NodeJS.ProcessEnv): AppConfig {
   return envSchema.parse(source);
 }
 
 let cached: AppConfig | undefined;
 
-/** Lazily parse + cache process.env so importing this module never crashes tests. */
 export function loadConfig(): AppConfig {
   if (!cached) cached = parseEnv(process.env);
   return cached;
