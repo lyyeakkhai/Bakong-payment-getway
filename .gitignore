@@ -39,3 +39,4 @@ Thumbs.db
 
 # ── Vite / frontend ───────────────────────────────────────
 frontend/.vite/
+frontend/dist/

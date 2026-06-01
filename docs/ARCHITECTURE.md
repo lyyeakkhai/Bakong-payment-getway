@@ -136,7 +136,69 @@ PORT=3001
 7. Frontend src: `index.css` → `PaymentTester.tsx` → `App.tsx` → `main.tsx`.
 8. `cd frontend && npx tsc --noEmit && npx vite build` (type-check + build gate).
 
-## 11. Decisions needing your nod (non-blocking)
+## 11. Docker / DevOps hosting
+
+### Container layout
+
+```
+Bakong-payment-getway/
+├── Dockerfile              # backend production image
+├── docker-compose.yml      # local dev: backend + frontend together
+└── .dockerignore
+```
+
+### `Dockerfile` (backend)
+
+```dockerfile
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY backend/package.json backend/pnpm-lock.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile
+COPY backend/ .
+RUN pnpm build
+
+FROM node:22-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json .
+EXPOSE 3001
+CMD ["node", "dist/server.js"]
+```
+
+### `docker-compose.yml` (local dev)
+
+```yaml
+services:
+  backend:
+    build: .
+    ports:
+      - "3001:3001"
+    env_file: ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+```
+
+### Environment variables at runtime
+
+Pass all vars from `backend/.env.example` via `env_file` or individual `-e` flags. No secrets baked into the image.
+
+### Production deployment
+
+- Run `docker build -t bakong-gateway .` from repo root.
+- Use PM2 inside the container **or** rely on Docker's restart policy (`restart: unless-stopped`) — both are valid; PM2 adds cluster mode for multi-core.
+- Reverse-proxy (nginx / Caddy) terminates TLS and forwards to port 3001.
+
+---
+
+## 12. Decisions needing your nod (non-blocking)
 - **npm instead of pnpm** (pnpm not installed). OK?
 - KHQR **Individual** generation (most common for personal Bakong accounts). Switch to Merchant if you have a merchant account ID.
 - Status tracking added (`/api/status`) because the frontend brief requires polling "until complete" — the brief didn't spec the endpoint, so I designed the minimal in-memory one.
