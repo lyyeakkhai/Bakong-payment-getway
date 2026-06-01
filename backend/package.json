@@ -1,0 +1,30 @@
+{
+  "name": "khqr-gateway-backend",
+  "version": "1.0.0",
+  "description": "Central KHQR payment gateway \u2014 stateless Express backend",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bakong-khqr": "^1.0.20",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "@types/bakong-khqr": "^1.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
+}
